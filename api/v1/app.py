@@ -4,6 +4,7 @@ from flask import Flask
 import os
 from models import storage
 from api.v1.views import app_views
+from flask import jsonify
 
 
 app = Flask(__name__)
@@ -14,6 +15,15 @@ app.register_blueprint(app_views)
 def teardown_appcontext(exception):
     """Close the storage engine session."""
     storage.close()
+
+
+@app.errorhandler(404)
+def not_found(error):
+    """
+    Handler for 404 errors that returns
+    JSON-formatted 404 status code response.
+    """
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == "__main__":
