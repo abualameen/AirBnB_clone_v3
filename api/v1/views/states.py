@@ -53,15 +53,13 @@ def update_state(state_id):
     return jsonify(state.to_dict()), 200
 
 
-@app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/states/<state_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def delete_state(state_id):
     """Deletes a State object."""
     state = storage.get(State, state_id)
     if state is None:
         abort(404)
-    
-    # Utilize the storage system's delete method here.
     storage.delete(state)
-    storage.save()  # Ensure changes are committed to the database
-    
+    storage.save()
     return jsonify({}), 200
