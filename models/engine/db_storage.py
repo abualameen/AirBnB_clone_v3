@@ -15,6 +15,7 @@ from os import getenv
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+import hashlib
 
 classes = {"Amenity": Amenity, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -57,6 +58,9 @@ class DBStorage:
 
     def save(self):
         """commit all changes of the current database session"""
+        for obj in self.__session:
+            if hasattr(obj, 'password'):
+                obj.password = hashlib.md5(obj.password.encode()).hexdigest()
         self.__session.commit()
 
     def delete(self, obj=None):
